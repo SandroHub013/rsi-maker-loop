@@ -50,9 +50,25 @@ sane while still catching errors at every step.
 
 ## Setup (first run)
 
-On the first iteration, establish the operating contract. Read it from a
-`.rsi-maker-loop.json` at the repo root if present; otherwise infer sane
-defaults and state them to the user so they can correct you:
+On the first iteration, establish the operating contract. Resolve it in this
+order:
+
+1. If `.rsi-maker-loop.json` exists at the repo root, use it (don't ask again).
+2. **Else, if a human is present (interactive session): ask 2–3 quick setup
+   questions**, then **persist the answers** to `.rsi-maker-loop.json` so you
+   never re-ask and any later (e.g. cloud) run inherits them. Ask only the
+   decision-changing ones:
+   - *Where should changes land?* → `commit_target`: **branch + PR** (review
+     first, recommended) or **main**.
+   - *Run forever or one pass?* → `perpetual`.
+   - *How hard should it try on judgment calls?* → `vote_k` (cost vs care).
+   Auto-detect the rest (e.g. whether a git **remote** exists — PRs need one;
+   without a remote, "branch + PR" degrades to a local branch).
+3. **Else (unattended — no human to answer, e.g. a scheduled cloud run): do NOT
+   block on questions.** Use the safe defaults below and record them, so the
+   autonomous loop never stalls waiting for input.
+
+Contract fields (defaults shown):
 
 - **commit_target** (default `"branch-pr"`): `"branch-pr"` works on a dedicated
   branch and opens a PR for human review; `"main"` commits/pushes to the default
